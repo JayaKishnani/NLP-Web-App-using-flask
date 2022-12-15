@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name = "viewport" content="width=device-width, initial-scale = 1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}">
+        <title>NER and sentiment predictor</title>
+    </head>
+    <body>
+        <h1 >Sentiment Analysis and Named Entity Recognition Web App</h1><br>
+
+        <form action="{{url_for('predict')}}" method="post">
+            <label for="file">Specify a file:</label><br><br>
+            <input type="file" name="file"><br><br>
+            {% for message in get_flashed_messages() %}
+                <p>{{message}}</p>
+            {%endfor%}
+            <label for="options">Select an option: </label><br><br>
+            <select name="inputdata" class="Input">
+                {% for o in data %}
+                <option value="{{ o.choose }}">{{ o.choose }}</option>
+                {% endfor %}
+            </select><br><br>
+            <button type="submit" class="pred-btn"> Predict </button>
+        </form>
+
+        
+        {% for result in results%}
+            <h3>{{result}}</h3>
+        {%endfor%}<br><br><br>
+        <button><a href="{{url_for('download_file')}}">Save results</a></button><br><br>
+
+        <button><a href="{{url_for('plot')}}">Graph Sentiment Prediction</a></button><br>
+        <!--<img src="/plot" alt="my plot">-->
+        
+    </body>
+</html>

@@ -16,12 +16,14 @@ import io
 import nltk
 from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
+# from werkzeug import secure_filename
 
 #Setting environment
 os.environ['JAVAHOME'] =  "C:\Program Files\Java\jdk-18.0.2"
 nltk.download('punkt')
 
 count = []
+# resultant=[]
 app = Flask(__name__)
 app.secret_key = "blah"
 
@@ -32,21 +34,26 @@ def home():
 @app.route('/predict', methods=['GET','POST'])
 def predict():
     if request.method=='POST':
+        # print("In predict")
+        # print(request)
+        # print(request.files)
         uploaded_file = request.files.get('file')
-        results=[]
+        
         
         if uploaded_file.filename != '':
             uploaded_file.save(uploaded_file.filename)
+            # print("File uploaded successfully ", uploaded_file.filename)
             flash("File uploaded successfully")
         else:
             flash("Upload a text file")
             return render_template("index.html")
             
-        with open(uploaded_file, 'r') as f:
-            text = f.read()
-
-        Inputdata = request.form.getvalue("inputdata")
+    with open(uploaded_file.filename, 'r') as f:
+        text = f.read()
+        # print("Text is: ", text)
+        Inputdata = request.form.get("inputdata")
         if Inputdata == "Analyze Sentiment":
+            results=[]
             lines = text.split('.')
             lines.pop()
             count1, count2, count3 = 0,0,0
@@ -67,9 +74,12 @@ def predict():
             count.append(count2)
             count.append(count3)
             
+            global resultant
+            resultant=results.copy()
             return render_template('index.html', results = results)
 
-        elif Inputdata == "Predict using custom NER":
+        elif Inputdata == "Predict using stanford NER":
+            results=[]
             st = StanfordNERTagger('D:\stanford-ner-4.2.0\stanford-ner-2020-11-17\classifiers\english.all.3class.distsim.crf.ser\english.all.3class.distsim.crf.ser',
                           'D:\stanford-ner-4.2.0\stanford-ner-2020-11-17\stanford-ner.jar',
                           encoding='utf-8')
@@ -78,9 +88,11 @@ def predict():
                 tokenized_line = word_tokenize(line)
                 classified_line = st.tag(tokenized_line)
                 results.append(classified_line)
+            resultant=results.copy()
             return render_template('index.html', results = results)
         
-        elif Inputdata == "Predict using stanford NER":
+        elif Inputdata == "Predict using custom NER":
+            results=[]
             model = load_model('ner_model.h5', custom_objects={"crf":tfa.layers.CRF})
             tags = ['B-gpe', 'I-org', 'I-gpe', 'I-tim', 'O', 'I-art', 'I-nat', 'I-eve', 'I-geo', 'B-art', 'B-per', 'B-org', 'B-eve', 'B-geo', 'B-nat', 'I-per', 'B-tim']
     
@@ -101,8 +113,9 @@ def predict():
             y = {}
             for num in list(x.keys()):
                 y[idx2word[num]] = x[num]
-
-            return render_template('index.html', results = y)
+            results.append(y)
+            resultant=results.copy()
+            return render_template('index.html', results = results)
 
 @app.route('/plot', methods=['GET','POST'])
 def plot():
@@ -114,8 +127,11 @@ def plot():
 
 @app.route('/download')
 def download_file():
-    path = "./results.txt"
-    return send_file(path, as_attachment=True)
+    print(resultant)
+    with open('results.txt', 'w') as f:
+        for items in resultant:
+            f.write('%s\n' %items)
+    return send_file('./results.txt', mimetype="text", as_attachment=True, download_name='results.txt')
 
 
 if __name__=='__main__':

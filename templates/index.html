@@ -10,7 +10,7 @@
     <body>
         <h1 >Sentiment Analysis and Named Entity Recognition Web App</h1><br>
 
-        <form action="{{url_for('predict')}}" method="post">
+        <form action="{{url_for('predict')}}" enctype = "multipart/form-data" method="post">
             <label for="file">Specify a file:</label><br><br>
             <input type="file" name="file"><br><br>
             {% for message in get_flashed_messages() %}

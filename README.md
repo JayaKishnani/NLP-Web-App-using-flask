@@ -1,7 +1,7 @@
 # NLP-Web-App-using-flask
 
 ### Aim:
-1) To upload a text file from the user by creating UI in **flask** and then select an option to implement predict sentiment or perform named entity recognition.
+1) To upload a text file from the user by creating UI in **flask** and then select an option to implement predict sentiment(and plot it using piechart) or perform named entity recognition and then save the results.
 2) NER model is created using custom **Bi-directional LSTM CRF model** and another method using **stanford NER taggers**.<br>
 *(LSTM - Long short term memory and CRF- Conditional Random field)*
 3) Sentiment analysis is done using **vader-sentiment analysis vocabulary** to predict neutral, positive and negative sentiments.
@@ -21,3 +21,7 @@
 <code>pip install -r requirements. txt</code><br>
 3) Running <code> app.py</code> using **flask environment**.<br>
 <code>python app.py</code>
+
+### Another GUI
+The above framework is also implemented using tkinter python library for creating GUI.<br>
+https://github.com/JayaKishnani/NLP-app

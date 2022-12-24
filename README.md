@@ -4,7 +4,7 @@
 1) To upload a text file from the user by creating UI in **flask** and then select an option to implement predict sentiment or perform named entity recognition.
 2) NER model is created using custom **Bi-directional LSTM CRF model** and another method using **stanford NER taggers**.<br>
 *(LSTM - Long short term memory and CRF- Conditional Random field)*
-3) Sentiment analysis is done using **vader-sentiment analysis vocabulary**.
+3) Sentiment analysis is done using **vader-sentiment analysis vocabulary** to predict neutral, positive and negative sentiments.
 
 ### File structure:
 1) <code>template/index.html</code> and <code>static/css/main.css</code> contains html and css files respectively for the UI.
